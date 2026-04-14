@@ -101,7 +101,7 @@ public class DocumentController {
         Long userId = CurrentUser.getUserId();
 
         //2.构建查询条件，只查询当前用户自己的文档
-        //  QueryWrapper是Mybatis-Plus中的一个查询条件构造器，用于构建SQL查询条件
+        // QueryWrapper是Mybatis-Plus中的一个查询条件构造器，用于构建SQL查询条件
         QueryWrapper<Document> queryWrapper = new QueryWrapper<>();
 
         //3.筛选条件：数据库表中的user_id = 当前登录用户id

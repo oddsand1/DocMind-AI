@@ -1,0 +1,28 @@
+# 服务端口（和Python 8080区分开）
+server:
+  port: 8083
+
+# 文件上传配置
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 200MB
+  # MySQL数据库配置（对应你的Document/User/ChatHistory实体）
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ai_document_agent?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+
+# Python AI服务配置（必须和你FastAPI启动的地址一致）
+python:
+  service:
+    base-url: http://127.0.0.1:8080
+
+# MyBatis-Plus配置
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

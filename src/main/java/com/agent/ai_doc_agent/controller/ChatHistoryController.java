@@ -17,33 +17,27 @@ public class ChatHistoryController {
 
     @PostMapping("/add")
     public boolean add(@RequestBody ChatHistory chatHistory) {
-        return chatHistoryService.save(chatHistory);
+        return chatHistoryService.saveChatHistory(chatHistory);
     }
 
     @GetMapping("/get/{id}")
     public ChatHistory get(@PathVariable Long id) {
-        return chatHistoryService.getById(id);
+        return chatHistoryService.getChatHistoryById(id);
     }
 
     @GetMapping("/list")
     public List<ChatHistory> list() {
-        return chatHistoryService.list();
+        return chatHistoryService.getAllChatHistories();
     }
 
     @GetMapping("/history")
     public Result<List<ChatHistory>> getHistory(@RequestParam Long documentId) {
-        // 自动获取当前登录用户
-        Long userId = CurrentUser.getUserId();
-
-        QueryWrapper<ChatHistory> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("doc_id", documentId).eq("user_id", userId).orderByDesc("create_time");
-        List<ChatHistory> list = chatHistoryService.list(queryWrapper);
-
+        List<ChatHistory> list = chatHistoryService.getHistoryByDocumentId(documentId);
         return Result.success(list);
     }
 
     @DeleteMapping("/delete/{id}")
     public boolean delete(@PathVariable Long id) {
-        return chatHistoryService.removeById(id);
+        return chatHistoryService.deleteChatHistoryById(id);
     }
 }

@@ -21,7 +21,6 @@ public class UserController {
     //UserController接收前端请求，调用service层的方法，返回结果
 
     private final UserService userService;
-
     private final JwtUtil jwtUtil;
 
     // 用户注册

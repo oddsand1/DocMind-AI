@@ -12,6 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class PythonAIService {
 
+    //用于调用Python服务，功能有服务间通信，处理文档，AI问答，连接测试
+
+
     @Value("${python.service.base-url}")
     private String pythonBaseUrl;
 
@@ -39,6 +42,7 @@ public class PythonAIService {
     // 2. 调用Python文档解析接口
     public JSONObject callDocumentParse(MultipartFile file) {
         try {
+            //url为Python服务的文档解析接口地址
             String url = pythonBaseUrl + "/api/document/parse";
             String filename = file.getOriginalFilename();
             if (filename == null || filename.isEmpty()) {

@@ -7,8 +7,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class JwtInterceptor implements HandlerInterceptor {
-    //拦截器基于spring框架，要实现HandlerInterceptor接口
-
+    //拦截器基于spring框架，实现了HandlerInterceptor接口
+    //对于通过配置类手动注册的组件（如拦截器、过滤器等），使用显式构造函数是最直接和可靠的方式，确保依赖能够正确传递
+    //所以这里没有用lombok的@RequiredArgsConstructor注解
     private final JwtUtil jwtUtil;
 
     public JwtInterceptor(JwtUtil jwtUtil) {

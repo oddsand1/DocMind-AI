@@ -1,7 +1,5 @@
 package com.agent.ai_doc_agent.util;
 
-import org.springframework.stereotype.Component;
-
 public class CurrentUser {
     private static final ThreadLocal<Long> USER_ID = new ThreadLocal<>();
 

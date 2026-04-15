@@ -14,7 +14,6 @@ import java.util.List;
 public class ChatHistoryController {
     private final ChatHistoryService chatHistoryService;
 
-
     @GetMapping("/history")
     public Result<List<ChatHistory>> getHistory(@RequestParam Long documentId) {
         List<ChatHistory> list = chatHistoryService.getHistoryByDocumentId(documentId);
@@ -36,10 +35,18 @@ public class ChatHistoryController {
     }
 
 
-
+    //删除用户的所有聊天历史记录
     @DeleteMapping("/delete/{userId}")
-    public Result<Boolean> delete(@PathVariable Long userId) {
+    public Result<Boolean> deleteByUserId(@PathVariable Long userId) {
         boolean result = chatHistoryService.deleteChatHistoryByUserId(userId);
+        return Result.success(result);
+    }
+
+
+    //删除指定文档的聊天历史记录
+    @DeleteMapping("/delete/{documentId}")
+    public Result<Boolean> deleteByDocumentId(@PathVariable Long documentId) {
+        boolean result = chatHistoryService.deleteChatHistoryByDocumentId(documentId);
         return Result.success(result);
     }
 }

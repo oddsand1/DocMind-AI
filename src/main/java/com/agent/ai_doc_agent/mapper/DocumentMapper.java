@@ -6,4 +6,5 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface DocumentMapper extends BaseMapper<Document> {
+    //操作数据库的方法，由mybatis-plus提供，BaseMapper是mybatis-plus的基类，包含了CRUD操作
 }

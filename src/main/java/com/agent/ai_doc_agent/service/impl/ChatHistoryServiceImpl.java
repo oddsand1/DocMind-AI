@@ -40,7 +40,7 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
     }
 
 
-    // 保存聊天历史
+    // 保存聊天历史记录
     @Override
     public boolean saveChatHistory(ChatHistory chatHistory) {
         return this.save(chatHistory);

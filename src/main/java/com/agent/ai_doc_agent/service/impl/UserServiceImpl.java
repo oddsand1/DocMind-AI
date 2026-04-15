@@ -5,22 +5,27 @@ import com.agent.ai_doc_agent.mapper.UserMapper;
 import com.agent.ai_doc_agent.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import jakarta.annotation.Resource;
 
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
-    @Resource
-    private BCryptPasswordEncoder passwordEncoder;
+    //UserServiceImpl是真正写业务逻辑的地方
+
+
+    // 密码加密器 / BCrypt加密器，由spring security提供，使用之前要先配置@Bean
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public boolean register(User user) {
         // 1. 判断用户名是否已存在
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getUsername, user.getUsername());
+        // getOne也是Mybatis-Plus的方法，用于根据查询条件查询单条记录
         User exist = getOne(wrapper);
         if (exist != null) {
             return false;

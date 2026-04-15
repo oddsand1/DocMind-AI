@@ -12,5 +12,6 @@ public interface UserService extends IService<User> {
     //注册
     boolean register(User user);
 
+    //登录
     User login(String username, String password);
 }

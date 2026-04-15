@@ -10,7 +10,7 @@ spring:
       max-request-size: 200MB
   # MySQL数据库配置（对应你的Document/User/ChatHistory实体）
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver  #jdbc是java的数据库驱动，用于连接mysql数据库
     url: jdbc:mysql://localhost:3306/ai_document_agent?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
@@ -22,7 +22,7 @@ python:
 
 # MyBatis-Plus配置
 mybatis-plus:
-  mapper-locations: classpath:mapper/*.xml
+  #mapper-locations: classpath:mapper/*.xml     让mybatis去mapper文件夹下找xml写的SQL语句，但是我项目用的是mybatisplus，根本不用写XML SQL
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl   控制台打印执行的SQL语句，项目上线时注释掉，避免占性能、泄露数据

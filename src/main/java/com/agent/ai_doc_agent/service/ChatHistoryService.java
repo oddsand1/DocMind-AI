@@ -1,8 +1,7 @@
 package com.agent.ai_doc_agent.service;
 
 import com.agent.ai_doc_agent.entity.ChatHistory;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.agent.ai_doc_agent.common.Result;
+
 
 import java.util.List;
 
@@ -23,15 +22,11 @@ public interface ChatHistoryService extends IService<ChatHistory> {
     /**
      * 根据用户ID获取聊天历史
      */
-    ChatHistory getChatHistoryById(Long userId);
-    
-    /**
-     * 获取所有聊天历史
-     */
-    List<ChatHistory> getAllChatHistories();
+    List<ChatHistory> getChatHistoryByUserId(Long userId);
+
     
     /**
      * 删除聊天历史
      */
-    boolean deleteChatHistoryById(Long userId);
+    boolean deleteChatHistoryByUserId(Long userId);
 }

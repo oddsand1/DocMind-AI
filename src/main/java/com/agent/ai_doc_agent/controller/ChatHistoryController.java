@@ -3,16 +3,16 @@ package com.agent.ai_doc_agent.controller;
 import com.agent.ai_doc_agent.common.Result;
 import com.agent.ai_doc_agent.entity.ChatHistory;
 import com.agent.ai_doc_agent.service.ChatHistoryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import jakarta.annotation.Resource;
 import java.util.List;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/chat")
 public class ChatHistoryController {
-    @Resource
-    private ChatHistoryService chatHistoryService;
+    private final ChatHistoryService chatHistoryService;
 
 
     @GetMapping("/history")
@@ -23,23 +23,23 @@ public class ChatHistoryController {
 
 
     @PostMapping("/add")
-    public boolean add(@RequestBody ChatHistory chatHistory) {
-        return chatHistoryService.saveChatHistory(chatHistory);
+    public Result<Boolean> add(@RequestBody ChatHistory chatHistory) {
+        boolean result = chatHistoryService.saveChatHistory(chatHistory);
+        return Result.success(result);
     }
+
 
     @GetMapping("/get/{userId}")
-    public ChatHistory get(@PathVariable Long userId) {
-        return chatHistoryService.getChatHistoryById(userId);
+    public Result<List<ChatHistory>> getByUserId(@PathVariable Long userId) {
+        List<ChatHistory> list = chatHistoryService.getChatHistoryByUserId(userId);
+        return Result.success(list);
     }
 
 
-    @GetMapping("/list")
-    public List<ChatHistory> list() {
-        return chatHistoryService.getAllChatHistories();
-    }
 
     @DeleteMapping("/delete/{userId}")
-    public boolean delete(@PathVariable Long userId) {
-        return chatHistoryService.deleteChatHistoryById(userId);
+    public Result<Boolean> delete(@PathVariable Long userId) {
+        boolean result = chatHistoryService.deleteChatHistoryByUserId(userId);
+        return Result.success(result);
     }
 }

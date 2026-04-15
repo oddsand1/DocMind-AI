@@ -28,18 +28,22 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
         return this.save(chatHistory);
     }
 
+
     @Override
-    public ChatHistory getChatHistoryById(Long id) {
-        return this.getById(id);
+    public ChatHistory getChatHistoryById(Long userId) {
+        return this.getById(userId);
     }
 
+
+    //根据用户id获取该用户所有文件的相关属性，内容、总结、提交时间等
     @Override
     public List<ChatHistory> getAllChatHistories() {
         return this.list();
     }
 
+
     @Override
-    public boolean deleteChatHistoryById(Long id) {
-        return this.removeById(id);
+    public boolean deleteChatHistoryById(Long userId) {
+        return this.removeById(userId);
     }
 }

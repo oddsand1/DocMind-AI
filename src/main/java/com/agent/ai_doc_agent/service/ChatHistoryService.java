@@ -21,9 +21,9 @@ public interface ChatHistoryService extends IService<ChatHistory> {
     boolean saveChatHistory(ChatHistory chatHistory);
     
     /**
-     * 根据ID获取聊天历史
+     * 根据用户ID获取聊天历史
      */
-    ChatHistory getChatHistoryById(Long id);
+    ChatHistory getChatHistoryById(Long userId);
     
     /**
      * 获取所有聊天历史
@@ -33,5 +33,5 @@ public interface ChatHistoryService extends IService<ChatHistory> {
     /**
      * 删除聊天历史
      */
-    boolean deleteChatHistoryById(Long id);
+    boolean deleteChatHistoryById(Long userId);
 }

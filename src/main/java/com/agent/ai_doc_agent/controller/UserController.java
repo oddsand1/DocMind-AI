@@ -53,9 +53,4 @@ public class UserController {
         }
     }
 
-    // 列表
-    @PostMapping("/list")
-    public Result list() {
-        return Result.success(userService.list());
-    }
 }

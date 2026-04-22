@@ -26,3 +26,7 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
     #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl   控制台打印执行的SQL语句，项目上线时注释掉，避免占性能、泄露数据
+  global-config:
+    db-config:
+      # 防止全表更新和删除
+      block-attack-enable: true

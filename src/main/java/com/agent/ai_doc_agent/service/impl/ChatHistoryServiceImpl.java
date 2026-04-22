@@ -2,6 +2,7 @@ package com.agent.ai_doc_agent.service.impl;
 
 import com.agent.ai_doc_agent.entity.ChatHistory;
 import com.agent.ai_doc_agent.entity.Document;
+import com.agent.ai_doc_agent.exception.BusinessException;
 import com.agent.ai_doc_agent.mapper.ChatHistoryMapper;
 import com.agent.ai_doc_agent.service.ChatHistoryService;
 import com.agent.ai_doc_agent.service.DocumentService;
@@ -28,10 +29,10 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
         try {
             Document document = documentService.getDocumentById(documentId, userId);
             if (document == null) {
-                throw new RuntimeException("文档不存在或无权访问");
+                throw new BusinessException(404, "文档不存在或无权访问");
             }
-        } catch (RuntimeException e) {
-            throw new RuntimeException("无权访问该文档的聊天历史: " + e.getMessage());
+        } catch (BusinessException e) {
+            throw new BusinessException(403, "无权访问该文档的聊天历史: " + e.getMessage());
         }
 
         QueryWrapper<ChatHistory> queryWrapper = new QueryWrapper<>();
@@ -56,7 +57,7 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
         
         // 确保只能获取自己的聊天记录
         if (!currentUserId.equals(userId)) {
-            throw new RuntimeException("无权查看其他用户的聊天记录");
+            throw new BusinessException(403, "无权查看其他用户的聊天记录");
         }
         
         QueryWrapper<ChatHistory> queryWrapper = new QueryWrapper<>();
@@ -73,7 +74,7 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
         
         // 确保只能删除自己的聊天记录
         if (!currentUserId.equals(userId)) {
-            throw new RuntimeException("无权删除其他用户的聊天记录");
+            throw new BusinessException(403, "无权删除其他用户的聊天记录");
         }
         
         QueryWrapper<ChatHistory> queryWrapper = new QueryWrapper<>();
@@ -90,10 +91,10 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
         try {
             Document document = documentService.getDocumentById(documentId, userId);
             if (document == null) {
-                throw new RuntimeException("文档不存在或无权访问");
+                throw new BusinessException(404, "文档不存在或无权访问");
             }
-        } catch (RuntimeException e) {
-            throw new RuntimeException("无权删除该文档的聊天历史: " + e.getMessage());
+        } catch (BusinessException e) {
+            throw new BusinessException(403, "无权删除该文档的聊天历史: " + e.getMessage());
         }
         
         // 删除当前用户与指定文档相关的聊天记录

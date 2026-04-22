@@ -4,7 +4,9 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+//改注解包含了@ComponentScan可以扫描启动类所在包及其子包下的spring组件，包括Controller、Service、Repository等
 @SpringBootApplication
+
 // 扫描你mapper目录下的所有Mapper接口
 @MapperScan("com.agent.ai_doc_agent.mapper")
 public class AiDocAgentApplication {

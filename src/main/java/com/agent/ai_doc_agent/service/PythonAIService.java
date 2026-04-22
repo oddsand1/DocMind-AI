@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class PythonAIService {
 
-    //用于调用Python服务，功能有服务间通信，处理文档，AI问答，连接测试
+    //这个类用于调用Python服务，功能有服务间通信，处理文档，AI问答，连接测试
 
 
     @Value("${python.service.base-url}")
@@ -50,14 +50,20 @@ public class PythonAIService {
             }
             log.info("调用Python文档解析接口，文件名：{}", filename);
 
+            // 构建HTTP POST请求，上传文件到Python服务
+            // form方法用于提交表单数据，这里将文件作为表单字段上传
+            // 第一个参数是表单字段名，第二个参数是文件名，第三个参数是文件输入流
+            // timeout设置为60000毫秒（60秒），避免请求超时
             HttpResponse response = HttpRequest.post(url)
                     .form("file", filename, file.getInputStream())
                     .timeout(60000)
                     .execute();
 
+            // 获取响应体内容
             String body = response.body();
             log.info("Python文档解析接口原始响应：{}", body);
 
+            // 将响应体解析为JSON对象
             JSONObject result = JSONObject.parseObject(body);
             log.info("Python文档解析接口返回：{}", result);
             return result;

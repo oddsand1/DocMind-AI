@@ -2,6 +2,7 @@ package com.agent.ai_doc_agent.service.impl;
 
 import com.agent.ai_doc_agent.entity.ChatHistory;
 import com.agent.ai_doc_agent.entity.Document;
+import com.agent.ai_doc_agent.exception.BusinessException;
 import com.agent.ai_doc_agent.mapper.DocumentMapper;
 import com.agent.ai_doc_agent.service.ChatHistoryService;
 import com.agent.ai_doc_agent.service.DocumentService;
@@ -73,13 +74,15 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
     @Override
     public Document getDocumentById(Long docId, Long userId) {
         //根据文档ID去数据库查文档
+        //this是当前类的实例，在调用方法时不用创建新对象，直接用this调用即可
+        //因为@Service标记了当前类，所以spring扫描时会自动创建一个实例，所以这里可以直接用this调用方法
         Document document = this.getById(docId);
         if (document == null) {
-            throw new RuntimeException("文档未找到");
+            throw new BusinessException(404, "文档未找到");
         }
         //判断文档属不属于当前登录用户
         if (!document.getUserId().equals(userId)) {
-            throw new RuntimeException("无权访问该文档");
+            throw new BusinessException(403, "无权访问该文档");
         }
         //验证成功-》返回文档详情
         return document;
@@ -100,16 +103,16 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         Long userId = jwtUtil.extractUserId(token); // 直接解析
 
         if (userId == null) {
-            throw new RuntimeException("用户未登录");
+            throw new BusinessException(401, "用户未登录");
         }
 
         if (documentId != null) {
             Document document = this.getById(documentId);
             if (document == null) {
-                throw new RuntimeException("指定文档不存在");
+                throw new BusinessException(404, "指定文档不存在");
             }
             if (!document.getUserId().equals(userId)) {
-                throw new RuntimeException("无权访问该文档");
+                throw new BusinessException(403, "无权访问该文档");
             }
             // 用数据库中真实的文档内容替换前端传入的content
             content = document.getContent();
@@ -123,7 +126,7 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         JSONObject askResult = pythonAIService.callSparkWithDocument(question, content);
         if (askResult.getInteger("code") != 200) {
             //msg的类型是字符串，从AI回答的JSON数据里找到msg这个key，然后获取对应的值
-            throw new RuntimeException(askResult.getString("msg"));
+            throw new BusinessException(500, askResult.getString("msg"));
         }
 
         ChatHistory chatHistory = new ChatHistory();

@@ -11,7 +11,6 @@ public class WebConfig implements WebMvcConfigurer {
     //对于通过配置类手动注册的组件（如拦截器、过滤器等），使用显式构造函数是最直接和可靠的方式，确保依赖能够正确传递
     //所以这里没有用lombok的@RequiredArgsConstructor注解
 
-
     private final JwtUtil jwtUtil;
 
     public WebConfig(JwtUtil jwtUtil) {

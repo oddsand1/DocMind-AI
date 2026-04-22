@@ -22,10 +22,14 @@ public class Result<T> {
     }
 
     // 失败
-    public static <T> Result<T> fail(String msg) {
+    public static <T> Result<T> fail(int code, String msg) {
         Result<T> r = new Result<>();
-        r.setCode(500);
+        r.setCode(code);
         r.setMsg(msg);
         return r;
+    }
+
+    public static <T> Result<T> fail(String msg) {
+        return fail(500, msg);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class RestTemplateConfig {
     // 给Java配置调用接口的工具
+    //将方法返回的对象注册为Bean
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();

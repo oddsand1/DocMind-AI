@@ -33,54 +33,32 @@ public class DocumentController {
     private final JwtUtil jwtUtil;//注入Jwt（JSON Web Token）工具类，用于处理token等，防止越权访问
 
     @PostMapping("/upload-save")
-    public Result<?> uploadAndSave(@RequestParam("file") MultipartFile file) {
-        try {
-            JSONObject result = documentService.uploadAndSave(file);
-            return Result.success(result);
-        } catch (IllegalArgumentException e) {
-            return Result.fail(e.getMessage());
-        } catch (Exception e) {
-            return Result.fail("上传失败：" + e.getMessage());
-        }
+    public Result<?> uploadAndSave(@RequestParam("file") MultipartFile file) throws Exception {
+        JSONObject result = documentService.uploadAndSave(file);
+        return Result.success(result);
     }
 
     @GetMapping("/list")//获取用户所有文档
     public Result<?> listDocuments() {
-        try {
-            //获取当前登录用户的ID（JWT自动获取）
-            Long userId = CurrentUser.getUserId();
-            List<Document> documents = documentService.getUserDocuments(userId);
-            return Result.success(documents);
-        } catch (Exception e) {
-            return Result.fail("获取文档列表失败：" + e.getMessage());
-        }
+        //获取当前登录用户的ID（JWT自动获取）
+        Long userId = CurrentUser.getUserId();
+        List<Document> documents = documentService.getUserDocuments(userId);
+        return Result.success(documents);
     }
 
     @GetMapping("/{id}")//根据文档ID获取文档
     public Result<?> getDocumentById(@PathVariable Long id) {
-        try {
-            //获取当前登录用户的ID（JWT自动获取）
-            Long userId = CurrentUser.getUserId();
-            Document document = documentService.getDocumentById(id, userId);
-            return Result.success(document);
-        } catch (RuntimeException e) {
-            return Result.fail(e.getMessage());
-        }
+        //获取当前登录用户的ID（JWT自动获取）
+        Long userId = CurrentUser.getUserId();
+        Document document = documentService.getDocumentById(id, userId);
+        return Result.success(document);
     }
 
     @PostMapping("/ask-with-document")
     public Result<?> askWithDocument(
             @RequestBody JSONObject request, //@RequestBody 获取请求体中的复杂数据并且绑定到当前方法参数上，这里的复杂数据就是JSONObject对象
             @RequestHeader("Authorization") String authHeader) {
-        try {
-            JSONObject result = documentService.askWithDocument(request, authHeader, chatHistoryService, pythonAIService, jwtUtil);
-            return Result.success(result);
-        } catch (IllegalArgumentException e) {
-            return Result.fail(e.getMessage());
-        } catch (RuntimeException e) {
-            return Result.fail(e.getMessage());
-        } catch (Exception e) {
-            return Result.fail("Token无效或已过期：" + e.getMessage());
-        }
+        JSONObject result = documentService.askWithDocument(request, authHeader, chatHistoryService, pythonAIService, jwtUtil);
+        return Result.success(result);
     }
 }

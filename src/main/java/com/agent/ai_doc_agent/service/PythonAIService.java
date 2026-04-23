@@ -5,6 +5,7 @@ import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,61 +24,10 @@ public class PythonAIService {
         return pythonBaseUrl;
     }
 
-    // 1. 测试Python链路
-    public JSONObject testPythonLink() {
-        try {
-            String url = pythonBaseUrl + "/ai/test";
-            HttpResponse response = HttpRequest.get(url).timeout(30000).execute();
-            return JSONObject.parseObject(response.body());
-        } catch (Exception e) {
-            log.error("Python服务连通性测试失败", e);
-            JSONObject error = new JSONObject();
-            error.put("code", 500);
-            error.put("msg", "Python服务未启动/链路不通：" + e.getMessage());
-            error.put("data", null);
-            return error;
-        }
-    }
 
-    // 2. 调用Python文档解析接口
-    public JSONObject callDocumentParse(MultipartFile file) {
-        try {
-            //url为Python服务的文档解析接口地址
-            String url = pythonBaseUrl + "/api/document/parse";
-            String filename = file.getOriginalFilename();
-            if (filename == null || filename.isEmpty()) {
-                filename = "unknown_file";
-            }
-            log.info("调用Python文档解析接口，文件名：{}", filename);
 
-            // 构建HTTP POST请求，上传文件到Python服务
-            // form方法用于提交表单数据，这里将文件作为表单字段上传
-            // 第一个参数是表单字段名，第二个参数是文件名，第三个参数是文件输入流
-            // timeout设置为60000毫秒（60秒），避免请求超时
-            HttpResponse response = HttpRequest.post(url)
-                    .form("file", filename, file.getInputStream())
-                    .timeout(60000)
-                    .execute();
-
-            // 获取响应体内容
-            String body = response.body();
-            log.info("Python文档解析接口原始响应：{}", body);
-
-            // 将响应体解析为JSON对象
-            JSONObject result = JSONObject.parseObject(body);
-            log.info("Python文档解析接口返回：{}", result);
-            return result;
-        } catch (Exception e) {
-            log.error("调用Python文档解析接口失败", e);
-            JSONObject error = new JSONObject();
-            error.put("code", 500);
-            error.put("msg", "文档解析失败：" + e.getMessage());
-            error.put("data", null);
-            return error;
-        }
-    }
-
-    // 3. 调用大模型问答接口（新增）
+    // 调用大模型问答接口（新增）
+    @Async
     public JSONObject callSparkAI(String question) {
         try {
             String url = pythonBaseUrl + "/ai/ask";
@@ -103,7 +53,8 @@ public class PythonAIService {
         }
     }
 
-    // 4. 文档问答接口
+    // 文档问答接口
+    @Async
     public JSONObject callSparkWithDocument(String question, String content) {
         try {
             String url = pythonBaseUrl + "/ai/ask-with-document";

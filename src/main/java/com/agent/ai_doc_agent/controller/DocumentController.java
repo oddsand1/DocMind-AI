@@ -2,6 +2,7 @@ package com.agent.ai_doc_agent.controller;
 
 import com.agent.ai_doc_agent.common.Result;
 import com.agent.ai_doc_agent.entity.Document;
+import com.agent.ai_doc_agent.exception.BusinessException;
 import com.agent.ai_doc_agent.service.ChatHistoryService;
 import com.agent.ai_doc_agent.service.DocumentService;
 import com.agent.ai_doc_agent.service.PythonAIService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/document")
@@ -54,11 +56,19 @@ public class DocumentController {
         return Result.success(document);
     }
 
+
     @PostMapping("/ask-with-document")
-    public Result<?> askWithDocument(
-            @RequestBody JSONObject request, //@RequestBody 获取请求体中的复杂数据并且绑定到当前方法参数上，这里的复杂数据就是JSONObject对象
+    public CompletableFuture<Result<JSONObject>> askWithDocument(
+            @RequestBody JSONObject request,
             @RequestHeader("Authorization") String authHeader) {
-        JSONObject result = documentService.askWithDocument(request, authHeader, chatHistoryService, pythonAIService, jwtUtil);
-        return Result.success(result);
+        return documentService.askWithDocument(request, authHeader, chatHistoryService, pythonAIService, jwtUtil)
+                .thenApply(Result::success)
+                .exceptionally(ex -> {
+                    if (ex.getCause() instanceof BusinessException) {
+                        BusinessException be = (BusinessException) ex.getCause();
+                        return Result.fail(be.getCode(), be.getMessage());
+                    }
+                    return Result.fail(500, "系统内部错误");
+                });
     }
 }

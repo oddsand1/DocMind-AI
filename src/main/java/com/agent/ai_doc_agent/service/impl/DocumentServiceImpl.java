@@ -12,17 +12,17 @@ import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
 public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> implements DocumentService {
-    
-    private final JwtUtil jwtUtil;
-    
+
     @Override
     public JSONObject uploadAndSave(MultipartFile file) throws Exception {
         if (file.isEmpty()) {
@@ -88,8 +88,9 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         return document;
     }
 
+    @Async
     @Override
-    public JSONObject askWithDocument(JSONObject request, String authHeader, ChatHistoryService chatHistoryService, PythonAIService pythonAIService, JwtUtil jwtUtil) {
+    public CompletableFuture<JSONObject> askWithDocument(JSONObject request, String authHeader, ChatHistoryService chatHistoryService, PythonAIService pythonAIService, JwtUtil jwtUtil) {
         String question = request.getString("question");
         Long documentId = request.getLong("documentId");
         String content = request.getString("content");
@@ -123,20 +124,22 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         }
 
         //调用Python AI服务，传入问题和文档内容，获取AI回答结果
-        JSONObject askResult = pythonAIService.callSparkWithDocument(question, content);
-        if (askResult.getInteger("code") != 200) {
-            //msg的类型是字符串，从AI回答的JSON数据里找到msg这个key，然后获取对应的值
-            throw new BusinessException(500, askResult.getString("msg"));
-        }
 
-        ChatHistory chatHistory = new ChatHistory();
-        chatHistory.setDocId(documentId);
-        chatHistory.setUserId(userId);
-        chatHistory.setQuestion(question);
-        chatHistory.setAnswer(askResult.getJSONObject("data").getString("answer"));
-        chatHistoryService.save(chatHistory);
+        return pythonAIService.callSparkWithDocument(question, content)
+                .thenApply(askResult -> {
+                    if (askResult.getInteger("code") != 200) {
+                        //msg的类型是字符串，从AI回答的JSON数据里找到msg这个key，然后获取对应的值
+                        throw new BusinessException(500, askResult.getString("msg"));
+                    }
+                    ChatHistory chatHistory = new ChatHistory();
+                    chatHistory.setDocId(documentId);
+                    chatHistory.setUserId(userId);
+                    chatHistory.setQuestion(question);
+                    chatHistory.setAnswer(askResult.getJSONObject("data").getString("answer"));
+                    chatHistoryService.save(chatHistory);
+                    // data的类型是JSONObject，从AI回答的JSON数据里找到data这个key，再获取对应的值
+                    return askResult.getJSONObject("data");
+                });
 
-        // data的类型是JSONObject，从AI回答的JSON数据里找到data这个key，再获取对应的值
-        return askResult.getJSONObject("data");
     }
 }

@@ -3,6 +3,7 @@ package com.agent.ai_doc_agent.config;
 import com.agent.ai_doc_agent.exception.BusinessException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableAsync
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -48,15 +50,17 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 // 配置异常处理，让异常能够被 GlobalExceptionHandler 捕获
                 .exceptionHandling(ex -> ex
-                .authenticationEntryPoint((request, response, authException) -> {
-                    // 抛出 BusinessException，让 GlobalExceptionHandler 处理
-                    throw new BusinessException(401, "用户未登录");
-                })
-                .accessDeniedHandler((request, response, accessDeniedException) -> {
-                    // 抛出 BusinessException，让 GlobalExceptionHandler 处理
-                    throw new BusinessException(403, "无权访问该资源");
-                })
-        );
+                    .authenticationEntryPoint((request, response, authException) -> {
+                        response.setStatus(401);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"error\": \"用户未登录\"}");
+                    })
+                    .accessDeniedHandler((request, response, accessDeniedException) -> {
+                        response.setStatus(403);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"error\": \"无权访问该资源\"}");
+                    })
+                );
 
         return http.build();
     }

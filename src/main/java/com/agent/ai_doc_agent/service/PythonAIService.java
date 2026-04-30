@@ -7,7 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -25,37 +26,9 @@ public class PythonAIService {
     }
 
 
-
-    // 调用大模型问答接口（新增）
-    @Async
-    public JSONObject callSparkAI(String question) {
-        try {
-            String url = pythonBaseUrl + "/ai/ask";
-            JSONObject payload = new JSONObject();
-            payload.put("question", question);
-            HttpResponse response = HttpRequest.post(url)
-                    .body(payload.toString())
-                    .contentType("application/json")
-                    .timeout(60000)
-                    .execute();
-
-            String body = response.body();
-            JSONObject result = JSONObject.parseObject(body);
-            log.info("大模型调用结果：{}", result);
-            return result;
-        } catch (Exception e) {
-            log.error("调用大模型失败", e);
-            JSONObject error = new JSONObject();
-            error.put("code", 500);
-            error.put("msg", "调用大模型失败：" + e.getMessage());
-            error.put("data", null);
-            return error;
-        }
-    }
-
     // 文档问答接口
     @Async
-    public JSONObject callSparkWithDocument(String question, String content) {
+    public CompletableFuture<JSONObject> callSparkWithDocument(String question, String content) {
         try {
             String url = pythonBaseUrl + "/ai/ask-with-document";
             JSONObject payload = new JSONObject();
@@ -70,14 +43,14 @@ public class PythonAIService {
             String body = response.body();
             JSONObject result = JSONObject.parseObject(body);
             log.info("文档问答调用结果：{}", result);
-            return result;
+            return CompletableFuture.completedFuture(result);
         } catch (Exception e) {
             log.error("调用文档问答失败", e);
             JSONObject error = new JSONObject();
             error.put("code", 500);
             error.put("msg", "调用文档问答失败：" + e.getMessage());
             error.put("data", null);
-            return error;
+            return CompletableFuture.completedFuture(error);
         }
     }
 }

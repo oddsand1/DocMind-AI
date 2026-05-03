@@ -9,12 +9,12 @@ import java.time.LocalDateTime;
 @Data
 @TableName("chat_history")
 public class ChatHistory {
-    @TableId(type = IdType.AUTO)
-    private Long id;
+    @TableId(type = IdType.ASSIGN_ID)
+    private String id;
     // 用户ID
-    private Long userId;
+    private String userId;
     // 关联文档ID
-    private Long docId;
+    private String docId;
     // 用户问题
     private String question;
     // AI回答

@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 @Data
 @TableName("document")
 public class Document {
-    @TableId(type = IdType.AUTO)
-    private Long id;
+    @TableId(type = IdType.ASSIGN_ID)
+    private String id;
     // 用户ID
-    private Long userId;
+    private String userId;
     // 文件名
     private String fileName;
     // 文件存储路径

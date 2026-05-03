@@ -17,13 +17,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatHistory> implements ChatHistoryService {
-    
+
     private final DocumentService documentService;
     
     @Override
-    public List<ChatHistory> getHistoryByDocumentId(Long documentId) {
+    public List<ChatHistory> getHistoryByDocumentId(String documentId) {
         // 自动获取当前登录用户
-        Long userId = CurrentUser.getUserId();
+        String userId = CurrentUser.getUserId();
         
         // 验证用户是否有权访问指定的文档
         try {
@@ -41,19 +41,11 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
     }
 
 
-    // 保存聊天历史记录
-    @Override
-    public boolean saveChatHistory(ChatHistory chatHistory) {
-        return this.save(chatHistory);
-    }
-
-
-
     //根据userId获取该用户的对话历史，包括问题、回答等
     @Override
-    public List<ChatHistory> getChatHistoryByUserId(Long userId) {
+    public List<ChatHistory> getChatHistoryByUserId(String userId) {
         // 获取当前登录用户ID
-        Long currentUserId = CurrentUser.getUserId();
+        String currentUserId = CurrentUser.getUserId();
         
         // 确保只能获取自己的聊天记录
         if (!currentUserId.equals(userId)) {
@@ -68,9 +60,9 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
     
 
     @Override
-    public boolean deleteChatHistoryByUserId(Long userId) {
+    public boolean deleteChatHistoryByUserId(String userId) {
         // 获取当前登录用户ID
-        Long currentUserId = CurrentUser.getUserId();
+        String currentUserId = CurrentUser.getUserId();
         
         // 确保只能删除自己的聊天记录
         if (!currentUserId.equals(userId)) {
@@ -83,9 +75,9 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
     }
 
     @Override
-    public boolean deleteChatHistoryByDocumentId(Long documentId) {
+    public boolean deleteChatHistoryByDocumentId(String documentId) {
         // 获取当前登录用户ID
-        Long userId = CurrentUser.getUserId();
+        String userId = CurrentUser.getUserId();
         
         // 验证用户是否有权访问指定的文档
         try {

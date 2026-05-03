@@ -30,7 +30,7 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         }
 
         // 自动获取当前登录用户
-        Long userId = com.agent.ai_doc_agent.util.CurrentUser.getUserId();
+        String userId = com.agent.ai_doc_agent.util.CurrentUser.getUserId();
 
         //将上传文件的字节数据（二进制字节数组）转换成UTF-8编码的字符串，获取文件内容
         String content = new String(file.getBytes(), "UTF-8");
@@ -59,40 +59,32 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
     }
 
     @Override
-    public List<Document> getUserDocuments(Long userId) {
-        //构建查询条件，只查询当前用户自己的文档
-        // QueryWrapper是Mybatis-Plus中的一个查询条件构造器，用于构建SQL查询条件
+    public List<Document> getUserDocuments(String userId) {
         QueryWrapper<Document> queryWrapper = new QueryWrapper<>();
-
-        //筛选条件：数据库表中的user_id = 当前登录用户id
         queryWrapper.eq("user_id", userId);
-
-        //执行查询，获取当前用户的所有文档列表，list是mybatisplus的IService接口下的核心方法之一
         return this.list(queryWrapper);
     }
 
     @Override
-    public Document getDocumentById(Long docId, Long userId) {
-        //根据文档ID去数据库查文档
-        //this是当前类的实例，在调用方法时不用创建新对象，直接用this调用即可
-        //因为@Service标记了当前类，所以spring扫描时会自动创建一个实例，所以这里可以直接用this调用方法
+    public Document getDocumentById(String docId, String userId) {
         Document document = this.getById(docId);
         if (document == null) {
             throw new BusinessException(404, "文档未找到");
         }
-        //判断文档属不属于当前登录用户
         if (!document.getUserId().equals(userId)) {
             throw new BusinessException(403, "无权访问该文档");
         }
-        //验证成功-》返回文档详情
         return document;
     }
 
     @Async
     @Override
     public CompletableFuture<JSONObject> askWithDocument(JSONObject request, String authHeader, ChatHistoryService chatHistoryService, PythonAIService pythonAIService, JwtUtil jwtUtil) {
+
+        System.out.println("当前执行线程：" + Thread.currentThread().getName());
+
         String question = request.getString("question");
-        Long documentId = request.getLong("documentId");
+        String documentId = request.getString("documentId");
         String content = request.getString("content");
 
         if (question == null || question.isEmpty()) {
@@ -101,7 +93,7 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
 
         // 直接从 header 解析 token，跳过拦截器！
         String token = authHeader.replace("Bearer ", "");
-        Long userId = jwtUtil.extractUserId(token); // 直接解析
+        String userId = jwtUtil.extractUserId(token); // 直接解析
 
         if (userId == null) {
             throw new BusinessException(401, "用户未登录");

@@ -3,54 +3,52 @@ package com.agent.ai_doc_agent.controller;
 import com.agent.ai_doc_agent.common.Result;
 import com.agent.ai_doc_agent.entity.User;
 import com.agent.ai_doc_agent.service.UserService;
-import com.agent.ai_doc_agent.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
-
-    //UserController接收前端请求，调用service层的方法，返回结果
-
+    
     private final UserService userService;
-    private final JwtUtil jwtUtil;
 
-    // 用户注册
     @PostMapping("/register")
     public Result register(@RequestBody User user) {
         boolean ok = userService.register(user);
-        if (ok) {
-            return Result.success("注册成功");
-        } else {
-            return Result.fail("用户名已存在");
-        }
+        return ok ? Result.success("注册成功") : Result.fail("用户名已存在");
     }
 
-    // 用户登录 —— 只加 token，其他完全不动！
+    @GetMapping("/captcha")
+    public Result getCaptcha() {
+        Map<String, Object> data = userService.getCaptcha();
+        return Result.success(data);
+    }
+
     @PostMapping("/login")
-    public Result login(@RequestBody User user) {
-        User loginUser = userService.login(user.getUsername(), user.getPassword());
-        if (loginUser != null) {
-            // 生成 token
-            String token = jwtUtil.generateToken(loginUser.getId());
-
-            // 组装返回：保留原来的用户信息 + 新增token
-            Map<String, Object> data = new HashMap<>();
-            data.put("user", loginUser);
-            data.put("token", token);
-
-            return Result.success(data);
-        } else {
-            return Result.fail("用户名或密码错误");
+    public Result login(@RequestBody Map<String, String> loginData) {
+        String username = loginData.get("username");
+        String password = loginData.get("password");
+        String captcha = loginData.get("captcha");
+        String captchaKey = loginData.get("captchaKey");
+        
+        Map<String, Object> data = userService.loginWithCaptcha(username, password, captchaKey, captcha);
+        if (data == null || data.containsKey("error")) {
+            String errorMsg = data != null ? (String) data.get("error") : "登录失败";
+            return Result.fail(errorMsg);
         }
+        return Result.success(data);
+    }
+
+    @PostMapping("/refresh-token")
+    public Result refreshToken(@RequestBody Map<String, String> requestData) {
+        Long userId = Long.parseLong(requestData.get("userId"));
+        String refreshToken = requestData.get("refreshToken");
+        
+        Map<String, Object> data = userService.refreshToken(userId, refreshToken);
+        return data != null ? Result.success(data) : Result.fail("刷新Token失败，请重新登录");
     }
 
 }

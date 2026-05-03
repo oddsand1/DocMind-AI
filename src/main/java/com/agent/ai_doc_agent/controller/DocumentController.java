@@ -43,32 +43,21 @@ public class DocumentController {
     @GetMapping("/list")//获取用户所有文档
     public Result<?> listDocuments() {
         //获取当前登录用户的ID（JWT自动获取）
-        Long userId = CurrentUser.getUserId();
-        List<Document> documents = documentService.getUserDocuments(userId);
+        List<Document> documents = documentService.getUserDocuments(CurrentUser.getUserId());
         return Result.success(documents);
     }
 
     @GetMapping("/{id}")//根据文档ID获取文档
     public Result<?> getDocumentById(@PathVariable Long id) {
         //获取当前登录用户的ID（JWT自动获取）
-        Long userId = CurrentUser.getUserId();
-        Document document = documentService.getDocumentById(id, userId);
+        Document document = documentService.getDocumentById(id, CurrentUser.getUserId());
         return Result.success(document);
     }
 
-
     @PostMapping("/ask-with-document")
-    public CompletableFuture<Result<JSONObject>> askWithDocument(
-            @RequestBody JSONObject request,
-            @RequestHeader("Authorization") String authHeader) {
-        return documentService.askWithDocument(request, authHeader, chatHistoryService, pythonAIService, jwtUtil)
-                .thenApply(Result::success)
-                .exceptionally(ex -> {
-                    if (ex.getCause() instanceof BusinessException) {
-                        BusinessException be = (BusinessException) ex.getCause();
-                        return Result.fail(be.getCode(), be.getMessage());
-                    }
-                    return Result.fail(500, "系统内部错误");
-                });
+    public Result<JSONObject> askWithDocument(@RequestBody JSONObject request, @RequestHeader("Authorization") String authHeader) {
+        //关键：同步等待异步执行完毕
+        JSONObject data = documentService.askWithDocument(request, authHeader, chatHistoryService, pythonAIService, jwtUtil).join();
+        return Result.success(data);
     }
 }

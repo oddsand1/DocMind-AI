@@ -21,13 +21,6 @@ public class ChatHistoryController {
     }
 
 
-    @PostMapping("/add")
-    public Result<Boolean> add(@RequestBody ChatHistory chatHistory) {
-        boolean result = chatHistoryService.saveChatHistory(chatHistory);
-        return Result.success(result);
-    }
-
-
     @GetMapping("/get/{userId}")
     public Result<List<ChatHistory>> getByUserId(@PathVariable Long userId) {
         List<ChatHistory> list = chatHistoryService.getChatHistoryByUserId(userId);

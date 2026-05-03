@@ -14,6 +14,10 @@ spring:
     url: jdbc:mysql://localhost:3306/ai_document_agent?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 10000ms
 
 # Python AI服务配置（必须和你FastAPI启动的地址一致）
 python:
@@ -30,3 +34,10 @@ mybatis-plus:
     db-config:
       # 防止全表更新和删除
       block-attack-enable: true
+
+
+# JWT配置
+jwt:
+  secret: 12345678901234567890123456789012
+  expiration: 1800000
+  refresh-expiration: 604800000

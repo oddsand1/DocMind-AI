@@ -41,8 +41,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // 配置授权规则
                 .authorizeHttpRequests(auth -> auth
-                        // 放行登录和注册接口
-                        .requestMatchers("/user/login", "/user/register").permitAll()
+                        // 放行登录、注册、验证码和刷新Token接口
+                        .requestMatchers("/user/login", "/user/register", "/user/captcha", "/user/refresh-token").permitAll()
                         // 其他请求需要认证
                         .anyRequest().authenticated()
                 )

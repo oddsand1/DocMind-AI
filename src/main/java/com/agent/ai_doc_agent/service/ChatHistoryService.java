@@ -10,14 +10,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ChatHistoryService extends IService<ChatHistory> {
     
     //根据文档ID获取聊天历史
-    List<ChatHistory> getHistoryByDocumentId(Long documentId);
+    List<ChatHistory> getHistoryByDocumentId(String documentId);
     
     //根据用户ID获取聊天历史
-    List<ChatHistory> getChatHistoryByUserId(Long userId);
+    List<ChatHistory> getChatHistoryByUserId(String userId);
 
     //删除聊天历史
-    boolean deleteChatHistoryByUserId(Long userId);
+    boolean deleteChatHistoryByUserId(String userId);
     
     //删除指定文档的聊天历史
-    boolean deleteChatHistoryByDocumentId(Long documentId);
+    boolean deleteChatHistoryByDocumentId(String documentId);
 }

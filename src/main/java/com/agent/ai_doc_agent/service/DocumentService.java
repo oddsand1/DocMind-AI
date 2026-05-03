@@ -19,12 +19,12 @@ public interface DocumentService extends IService<Document> {
     /**
      * 获取用户文档列表
      */
-    List<Document> getUserDocuments(Long userId);
+    List<Document> getUserDocuments(String userId);
     
     /**
      * 根据ID获取文档（带权限检查）
      */
-    Document getDocumentById(Long docId, Long userId);
+    Document getDocumentById(String docId, String userId);
     
     /**
      * 与文档相关的问题咨询

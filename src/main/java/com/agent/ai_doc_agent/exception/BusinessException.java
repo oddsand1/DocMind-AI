@@ -1,5 +1,6 @@
 package com.agent.ai_doc_agent.exception;
 
+//业务异常类
 public class BusinessException extends RuntimeException {
     private int code; // 错误码   （如404、401、403等）
 
@@ -10,7 +11,7 @@ public class BusinessException extends RuntimeException {
 
     public BusinessException(String message) {
         super(message);
-        this.code = 500; // 默认错误码  500：后端代码错误
+        this.code = 500; // 默认错误码  500：服务器内部错误
     }
 
     public int getCode() {

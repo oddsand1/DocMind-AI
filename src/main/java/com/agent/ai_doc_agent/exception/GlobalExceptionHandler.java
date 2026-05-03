@@ -1,9 +1,7 @@
 package com.agent.ai_doc_agent.exception;
 
 import com.agent.ai_doc_agent.common.Result;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice

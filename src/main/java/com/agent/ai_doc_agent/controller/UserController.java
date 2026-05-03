@@ -44,7 +44,7 @@ public class UserController {
 
     @PostMapping("/refresh-token")
     public Result refreshToken(@RequestBody Map<String, String> requestData) {
-        Long userId = Long.parseLong(requestData.get("userId"));
+        String userId = requestData.get("userId");
         String refreshToken = requestData.get("refreshToken");
         
         Map<String, Object> data = userService.refreshToken(userId, refreshToken);

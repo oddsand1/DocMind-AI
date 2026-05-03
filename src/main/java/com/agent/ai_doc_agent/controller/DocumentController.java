@@ -48,7 +48,7 @@ public class DocumentController {
     }
 
     @GetMapping("/{id}")//根据文档ID获取文档
-    public Result<?> getDocumentById(@PathVariable Long id) {
+    public Result<?> getDocumentById(@PathVariable String id) {
         //获取当前登录用户的ID（JWT自动获取）
         Document document = documentService.getDocumentById(id, CurrentUser.getUserId());
         return Result.success(document);

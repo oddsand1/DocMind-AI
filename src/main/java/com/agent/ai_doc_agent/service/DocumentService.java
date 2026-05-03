@@ -1,11 +1,11 @@
 package com.agent.ai_doc_agent.service;
 
 import com.agent.ai_doc_agent.entity.Document;
-import com.agent.ai_doc_agent.entity.ChatHistory;
 import com.agent.ai_doc_agent.util.JwtUtil;
 import com.alibaba.fastjson2.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -29,5 +29,5 @@ public interface DocumentService extends IService<Document> {
     /**
      * 与文档相关的问题咨询
      */
-    JSONObject askWithDocument(JSONObject request, String authHeader, ChatHistoryService chatHistoryService, PythonAIService pythonAIService, JwtUtil jwtUtil);
+    CompletableFuture<JSONObject> askWithDocument(JSONObject request, String authHeader, ChatHistoryService chatHistoryService, PythonAIService pythonAIService, JwtUtil jwtUtil);
 }

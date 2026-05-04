@@ -3,6 +3,7 @@ package com.agent.ai_doc_agent.service.impl;
 import com.agent.ai_doc_agent.entity.ChatHistory;
 import com.agent.ai_doc_agent.entity.Document;
 import com.agent.ai_doc_agent.exception.BusinessException;
+import com.agent.ai_doc_agent.mapper.ChatHistoryMapper;
 import com.agent.ai_doc_agent.mapper.DocumentMapper;
 import com.agent.ai_doc_agent.service.ChatHistoryService;
 import com.agent.ai_doc_agent.service.DocumentService;
@@ -12,16 +13,24 @@ import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> implements DocumentService {
+
+
+    private final ChatHistoryMapper chatHistoryMapper;
+
 
     @Override
     public JSONObject uploadAndSave(MultipartFile file) throws Exception {
@@ -133,5 +142,32 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
                     return askResult.getJSONObject("data");
                 });
 
+    }
+
+
+    @Override
+    public boolean deleteDocument(String docId,String userId) {
+        //1.检查文档是否存在
+        Document document=this.getById(docId);
+        if(document==null){
+            throw new BusinessException(404, "文档未找到");
+        }
+
+        //2.检查权限
+        if(!document.getUserId().equals(userId)){
+            throw new BusinessException(403, "无权删除该文档");
+        }
+
+        //3.删除关联的聊天记录
+        QueryWrapper<ChatHistory> wrapper = new QueryWrapper<>();
+        wrapper.eq("doc_id", docId).eq("user_id", userId);
+        chatHistoryMapper.delete(wrapper);
+
+        //4.删除文档
+        boolean deleted=this.removeById(docId);
+        if(deleted){
+            log.info("文档{}删除成功",docId);
+        }
+        return deleted;
     }
 }

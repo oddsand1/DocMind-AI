@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @TableName("chat_history")
 public class ChatHistory {
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     private String id;
     // 用户ID
     private String userId;

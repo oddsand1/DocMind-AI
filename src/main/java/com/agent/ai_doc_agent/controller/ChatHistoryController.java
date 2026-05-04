@@ -28,8 +28,8 @@ public class ChatHistoryController {
     }
 
 
-    //删除用户的所有聊天历史记录
-    @DeleteMapping("/delete/{userId}")
+    //删除当前用户的所有聊天记录
+    @DeleteMapping("/delete/user/{userId}")
     public Result<Boolean> deleteByUserId(@PathVariable String userId) {
         boolean result = chatHistoryService.deleteChatHistoryByUserId(userId);
         return Result.success(result);
@@ -37,7 +37,7 @@ public class ChatHistoryController {
 
 
     //删除指定文档的聊天历史记录
-    @DeleteMapping("/delete/{documentId}")
+    @DeleteMapping("/delete/document/{documentId}")
     public Result<Boolean> deleteByDocumentId(@PathVariable String documentId) {
         boolean result = chatHistoryService.deleteChatHistoryByDocumentId(documentId);
         return Result.success(result);

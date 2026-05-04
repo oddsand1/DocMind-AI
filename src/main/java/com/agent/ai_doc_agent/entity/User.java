@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @TableName("user")
 public class User {
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     private String id;
     // 用户名
     private String username;

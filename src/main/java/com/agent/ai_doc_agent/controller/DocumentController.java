@@ -60,4 +60,12 @@ public class DocumentController {
         JSONObject data = documentService.askWithDocument(request, authHeader, chatHistoryService, pythonAIService, jwtUtil).join();
         return Result.success(data);
     }
+
+    @DeleteMapping("/{id}")
+    public Result<?> deleteDocument(@PathVariable String id) {
+        //获取当前登陆用户的id
+        String userId = CurrentUser.getUserId();
+        boolean deleted = documentService.deleteDocument(id, userId);
+        return deleted?Result.success("删除成功"):Result.fail("删除失败");
+    }
 }

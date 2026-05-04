@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @TableName("document")
 public class Document {
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     private String id;
     // 用户ID
     private String userId;

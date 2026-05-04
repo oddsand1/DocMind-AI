@@ -18,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatHistory> implements ChatHistoryService {
 
+
     private final DocumentService documentService;
     
     @Override
@@ -59,6 +60,7 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
 
     
 
+    //删除当前用户的所有聊天记录
     @Override
     public boolean deleteChatHistoryByUserId(String userId) {
         // 获取当前登录用户ID
@@ -74,11 +76,12 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
         return this.remove(queryWrapper);
     }
 
+    //删除当前文档的所有聊天记录
     @Override
     public boolean deleteChatHistoryByDocumentId(String documentId) {
         // 获取当前登录用户ID
         String userId = CurrentUser.getUserId();
-        
+
         // 验证用户是否有权访问指定的文档
         try {
             Document document = documentService.getDocumentById(documentId, userId);

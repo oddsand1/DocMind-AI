@@ -151,4 +151,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         
         return data;
     }
+
+    @Override
+    public boolean changePassword(String userId, String oldPassword, String newPassword, String confirmPassword) {
+        //1.根据用户id查找用户
+        User user=getById(userId);
+        if(user==null){
+            return false;
+        }
+
+        //2.验证原密码是否正确
+        boolean match=passwordEncoder.matches(oldPassword, user.getPassword());
+        if(!match){
+            return false;
+        }
+
+        //3.验证两次新密码是否一致
+        if(!newPassword.equals(confirmPassword)){
+            return false;
+        }
+
+        //4.更新密码（加密存储）
+        String encodePwd=passwordEncoder.encode(newPassword);
+        user.setPassword(encodePwd);
+
+        return updateById(user);
+    }
 }

@@ -19,5 +19,5 @@ public interface ChatHistoryService extends IService<ChatHistory> {
     boolean deleteChatHistoryByUserId(String userId);
     
     //删除指定文档的聊天历史
-    boolean deleteChatHistoryByDocumentId(String documentId);
+    boolean deleteChatHistoryByRecordId(Long recordId);
 }

@@ -3,6 +3,7 @@ package com.agent.ai_doc_agent.controller;
 import com.agent.ai_doc_agent.common.Result;
 import com.agent.ai_doc_agent.entity.User;
 import com.agent.ai_doc_agent.service.UserService;
+import com.agent.ai_doc_agent.util.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,4 +52,21 @@ public class UserController {
         return data != null ? Result.success(data) : Result.fail("刷新Token失败，请重新登录");
     }
 
+    @PostMapping("/change-password")
+    public Result changePassword(@RequestBody Map<String, String> requestData) {
+        String oldPassword = requestData.get("oldPassword");
+        String newPassword = requestData.get("newPassword");
+        String confirmPassword = requestData.get("confirmPassword");
+
+        //获取当前用户id
+        String userId= CurrentUser.getUserId();
+
+        // 检查用户是否登录
+        if (userId == null) {
+            return Result.fail("用户未登录，请先登录");
+        }
+
+        boolean success= userService.changePassword(userId, oldPassword, newPassword, confirmPassword);
+        return success?Result.success("密码修改成功"):Result.fail("原密码错误或两次输入的密码不一致");
+    }
 }

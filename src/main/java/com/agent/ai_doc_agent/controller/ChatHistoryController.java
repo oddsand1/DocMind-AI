@@ -37,9 +37,9 @@ public class ChatHistoryController {
 
 
     //删除指定文档的聊天历史记录
-    @DeleteMapping("/delete/document/{documentId}")
-    public Result<Boolean> deleteByDocumentId(@PathVariable String documentId) {
-        boolean result = chatHistoryService.deleteChatHistoryByDocumentId(documentId);
+    @DeleteMapping("/delete/{recordId}")
+    public Result<Boolean> deleteByRecordId(@PathVariable Long recordId) {
+        boolean result = chatHistoryService.deleteChatHistoryByRecordId(recordId);
         return Result.success(result);
     }
 }

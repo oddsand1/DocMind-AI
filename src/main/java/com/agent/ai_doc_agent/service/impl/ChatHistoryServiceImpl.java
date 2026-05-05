@@ -78,7 +78,7 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
 
     //删除当前文档的所有聊天记录
     @Override
-    public boolean deleteChatHistoryByDocumentId(String documentId) {
+    public boolean deleteChatHistoryByRecordId(Long recordId) {
         // 获取当前登录用户ID
         String userId = CurrentUser.getUserId();
 
@@ -94,7 +94,7 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
         
         // 删除当前用户与指定文档相关的聊天记录
         QueryWrapper<ChatHistory> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("doc_id", documentId).eq("user_id", userId);
+        queryWrapper.eq("id", recordId).eq("user_id", userId);
         return this.remove(queryWrapper);
     }
 }

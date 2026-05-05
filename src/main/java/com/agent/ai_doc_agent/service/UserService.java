@@ -28,4 +28,7 @@ public interface UserService extends IService<User> {
 
     // 获取验证码
     Map<String, Object> getCaptcha();
+
+    //修改密码
+    boolean changePassword(String userId, String oldPassword, String newPassword, String confirmPassword);
 }

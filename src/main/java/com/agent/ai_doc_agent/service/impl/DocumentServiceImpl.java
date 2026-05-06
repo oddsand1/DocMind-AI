@@ -170,4 +170,14 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         }
         return deleted;
     }
+
+    @Override
+    public List<Document> searchDocumentsByName(String userId, String keyword) {
+        QueryWrapper<Document> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userId);
+        if (keyword != null && !keyword.isEmpty()) {
+            queryWrapper.like("file_name", keyword);
+        }
+        return this.list(queryWrapper);
+    }
 }

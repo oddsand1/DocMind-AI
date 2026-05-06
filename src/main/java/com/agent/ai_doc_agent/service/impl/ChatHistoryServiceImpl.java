@@ -76,22 +76,12 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
         return this.remove(queryWrapper);
     }
 
-    //删除当前文档的所有聊天记录
+    //删除当前文档的所有聊天记录（文档主键）
     @Override
     public boolean deleteChatHistoryByRecordId(Long recordId) {
         // 获取当前登录用户ID
         String userId = CurrentUser.getUserId();
 
-        // 验证用户是否有权访问指定的文档
-       /* try {
-            Document document = documentService.getDocumentById(documentId, userId);
-            if (document == null) {
-                throw new BusinessException(404, "文档不存在或无权访问");
-            }
-        } catch (BusinessException e) {
-            throw new BusinessException(403, "无权删除该文档的聊天历史: " + e.getMessage());
-        }*/
-        
         // 删除当前用户与指定文档相关的聊天记录
         QueryWrapper<ChatHistory> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", recordId).eq("user_id", userId);

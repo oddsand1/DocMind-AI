@@ -21,4 +21,6 @@ public interface DocumentService extends IService<Document> {
 
     boolean deleteDocument(String docId,String userId);
 
+    List<Document> searchDocumentsByName(String userId, String keyword);
+
 }

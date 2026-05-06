@@ -68,4 +68,11 @@ public class DocumentController {
         boolean deleted = documentService.deleteDocument(id, userId);
         return deleted?Result.success("删除成功"):Result.fail("删除失败");
     }
+
+    @GetMapping("/search")
+    public Result<?> searchDocuments(@RequestParam String keyword) {
+        String userId = CurrentUser.getUserId();
+        List<Document> documents = documentService.searchDocumentsByName(userId, keyword);
+        return Result.success(documents);
+    }
 }

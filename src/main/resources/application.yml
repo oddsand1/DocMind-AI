@@ -12,8 +12,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver  #jdbc是java的数据库驱动，用于连接mysql数据库
     url: jdbc:mysql://localhost:3306/ai_document_agent?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
-    username: root
-    password: 123456
+    username: 
+    password: 
   redis:
     host: localhost
     port: 6379
